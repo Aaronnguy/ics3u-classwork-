@@ -22,7 +22,7 @@ clock = pygame.time.Clock()
 
 scene_title_font = pygame.font.SysFont('Arial', 50)
 end_scene_font = pygame.font.SysFont('Arial', 20)
-current_screen = 2
+current_screen = 0
 roger_x = 280
 roger_y = 280
 roger_leg_1_x = 254
