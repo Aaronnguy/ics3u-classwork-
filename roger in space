@@ -1,0 +1,431 @@
+import pygame
+import random
+from pygame.locals import K_ESCAPE, KEYDOWN, QUIT,MOUSEBUTTONDOWN, K_RIGHT, K_LEFT
+  
+pygame.init()
+  
+def main ():
+  
+  WIDTH = 640
+  HEIGHT = 480                                           
+  SIZE = (WIDTH, HEIGHT)
+  
+  screen = pygame.display.set_mode(SIZE)
+  clock = pygame.time.Clock()
+  current_screen = 0
+  # ---------------------------
+  # Initialize global variables
+  scene_title_font = pygame.font.SysFont('Comic Sans', 50)
+  how_to_play_font = pygame.font.SysFont('Comic Sans', 35)
+  how_to_kill_font = pygame.font.SysFont('Comic Sans', 35)
+  winning_font = pygame.font.SysFont('Comic Sans', 70)
+  losing_font = pygame.font.SysFont('Comic Sans', 30)
+  level_font = pygame.font.SysFont ('Comic Sans',35)
+  enemy_killed = []
+  enemies_left = ['Alien 1', 'Alien 2', 'Alien 3', 'Alien 4']
+
+  # load images 
+  spaceImg = pygame.image.load('space.png')
+  space = pygame.transform.scale(spaceImg, (90, 100))
+  space_title = pygame.transform.scale(spaceImg, (185,185))
+  astroidImg = pygame.image.load('astroid.png')
+  astroid = pygame.transform.scale(astroidImg, (70, 70))
+  alienImg = pygame.image.load('alien.png')
+  alien = pygame.transform.scale(alienImg, (110,110))
+  alien_2 = pygame.transform.scale (alienImg, (110, 110))
+  alien_3 = pygame.transform.scale (alienImg, (110,110))
+  alien_4 = pygame.transform.scale (alienImg,(110,110))
+  alien_5= pygame.transform.scale(alienImg, (110,110))
+  explodeImg = pygame.image.load('explode.png')
+  explode = pygame.transform.scale(explodeImg, (150,150))
+  alien = pygame.transform.scale(alienImg, (110,110))
+  
+  # spaceship
+  spaceship_x = 274
+  spaceship_y = 400
+  spaceship_size = 80
+  spaceship_rect = pygame.Rect(spaceship_x, spaceship_y, spaceship_size, spaceship_size)
+  player_rect_x = 274
+  player_rect_y = 400 
+  # asteroid 
+  obstacle_x = 200
+  obstacle_y = 100
+  obstacle_size = 50
+  obstacle = pygame.Rect(obstacle_x, obstacle_y, obstacle_size, obstacle_size)
+  obstacle1_x = 150
+  obstacle1_y = 100
+  obstacle1_size = 50
+  obstacle1 = pygame.Rect(obstacle1_x, obstacle1_y, obstacle1_size, obstacle1_size)
+
+
+  
+  # laser 
+  laser_x = spaceship_x
+  laser_y = spaceship_y
+  laser_size = 30
+    
+
+  spaceship_x_change = 0
+  
+  power_ups = []
+  
+  power_up_2 = 1
+  power_up_1 = 1 
+  # player_laser 
+  player_laser = False 
+  
+  
+
+  laser = pygame.Rect(laser_x, laser_y, laser_size - 10, laser_size)
+ 
+      
+
+  
+  
+  #border 
+  spaceship_movement_x = 380
+  
+
+  # enemy visible
+  enemy_visible = True
+  enemy_1_visible = True
+  enemy_2_visible = True
+  enemy_3_visible = True
+  enemy_4_visible = True
+
+  #enemy laser visible
+  enemy_shoot_1_visible = True
+  enemy_shoot_2_visible = True
+  enemy_shoot_3_visible = True
+  enemy_shoot_4_visible = True
+  enemy_shoot_5_visible = True 
+ 
+  #enemy laser 
+  enemy_shoot_1 = pygame.Rect(44,79,5,30)
+  enemy_shoot_2 = pygame.Rect(148,79,5,30)
+  enemy_shoot_3 = pygame.Rect(266,79,5,30)
+  enemy_shoot_4 = pygame.Rect(399,79,5,30)
+  enemy_shoot_5 = pygame.Rect (516,79,5,30)
+
+  # power up rect 
+  power_up_1_visible = True
+  power_up_2_visible = True
+  power_up_1_rect = pygame.Rect (375,199,15,15)
+  power_up_2_rect = pygame.Rect (475,130,15,15)
+
+
+  
+ # power_up
+  power_up_1_rect.y = random.randint(50,300)
+  power_up_1_rect.x = random.randint(50,300)
+  power_up_2_rect.y = random.randint(50,300)
+  power_up_2_rect.x = random.randint(50,300)
+  
+  # ---------------------------
+  
+  running = True
+  while running:
+      # EVENT HANDLING
+      for event in pygame.event.get():
+          if event.type == KEYDOWN:
+              if event.key == K_ESCAPE:
+                  running = False 
+              elif event.key == K_RIGHT and current_screen < 2: 
+                current_screen += 1 
+              elif event.key == K_LEFT and current_screen < 2:
+                current_screen -= 1
+          elif event.type == QUIT:
+              running = False
+          elif event.type == MOUSEBUTTONDOWN:
+              print(event.pos)
+
+      # GAME STATE UPDATES
+      keys = pygame.key.get_pressed()
+      if current_screen == 2:
+          if keys[100] == True: # d  
+              spaceship_x += 10 
+              spaceship_rect.x += 10
+          elif keys[97] == True:  #a 
+              spaceship_x -= 10 
+              spaceship_rect.x -= 10
+          elif keys[115] == True:  #s
+              spaceship_y += 10 
+              spaceship_rect.y += 10
+          elif keys[119] == True: #w  
+              spaceship_y -= 10 
+              spaceship_rect.y -= 10 
+          elif keys[32] == True:  #spacebar 
+              player_laser = True 
+    
+            
+
+          else:
+              player_laser = False 
+            
+      
+            
+  
+          
+          
+              
+              
+      
+      # All game math and comparisons happen here
+      obstacle_y += 1
+      obstacle1_y += 1 
+      obstacle.y += 1 
+      obstacle1.y += 1
+      if current_screen == 2:
+        enemy_shoot_1.y += 4
+        enemy_shoot_2.y += 4
+        enemy_shoot_3.y += 4
+        enemy_shoot_4.y += 4 
+        enemy_shoot_5.y += 4
+  
+      if obstacle_y >= 480:
+          obstacle_y = -10 
+          obstacle1_y = -10  
+          obstacle.y = -10
+          obstacle1.y = -10 
+
+      if spaceship_rect.colliderect(obstacle) or spaceship_rect.colliderect(obstacle1):
+          current_screen = 4
+      elif spaceship_rect.colliderect(power_up_1_rect): 
+          power_up_1_visible = False
+          enemy_visible = False
+          enemy_1_visible = False
+          enemy_shoot_2 = pygame.Rect(0,0,0,0)
+          enemy_shoot_1 = pygame.Rect(0,0,0,0)
+
+          enemy_shoot_1_visible = False
+          enemy_shoot_2_visible = False
+          power_ups.append (power_up_1)
+          current_screen = 3
+        
+      elif spaceship_rect.colliderect(power_up_2_rect):
+          power_up_2_visible = False
+          enemy_visible = False
+          enemy_1_visible = False
+          enemy_shoot_2 = pygame.Rect(0,0,0,0)
+          enemy_shoot_1 = pygame.Rect(0,0,0,0)
+
+          enemy_shoot_1_visible = False
+          enemy_shoot_2_visible = False
+          power_ups.append (power_up_2)
+          current_screen = 3 
+          
+          
+          
+
+      if spaceship_rect.colliderect(enemy_shoot_1) or spaceship_rect.colliderect (enemy_shoot_2):
+        current_screen = 4           
+
+      if spaceship_rect.colliderect(enemy_shoot_3) or spaceship_rect.colliderect (enemy_shoot_4):
+        current_screen = 4
+
+      if spaceship_rect.colliderect(enemy_shoot_5):
+        current_screen = 4
+       
+        
+        
+    
+      # collision
+      # if spaceship_rect.colliderect(obstacle_rect):
+      
+
+
+
+      if current_screen == 0:
+       # Menu Screen
+        screen.fill ((255,0,0))
+        scene_title = scene_title_font.render ('Space Roger™️',True, (255,255,255)) 
+        screen.blit(scene_title, (0,0))
+        screen.blit(space_title, (210,205))
+      
+  
+      if current_screen == 1: 
+       # Instruction Screen 
+        screen.fill ((255,0,0))
+        scene_title = scene_title_font.render('How to Play', True,(255, 255, 255))
+        how_to_play = how_to_play_font.render('Use the A and D button to avoid the flies', True, (255,255,255))
+        how_to_kill = how_to_kill_font.render('To shoot you will have to hold down spacebar', True, (255,255,255))
+        how_to_power_up = how_to_kill_font.render('Collect the red squares to unlock a powerup',True,(255,255,255))
+        what_do_powerups_do = how_to_kill_font.render('Powerups will help advance you in the next game',True,(255,255,255))
+        screen.blit(scene_title, (0,0))
+        screen.blit(how_to_play, (3,107))
+        screen.blit(how_to_kill, (3,225))
+        screen.blit(how_to_power_up,(3,313))
+        screen.blit(what_do_powerups_do,(3,399))
+     
+      elif current_screen == 2: 
+        # Game
+        screen.fill((0, 0, 0))  # always the first drawing command
+      
+    # Level font
+        level_number = level_font.render ('Level 1',True,(255,255,255)) 
+        screen.blit(level_number,(7,445))
+
+    # stars 
+        for x_offset in range (10,670,125):
+            for y_offset in range(0,377, 60):
+                pygame.draw.circle(screen, (255, 255, 0), (x_offset, y_offset), 8)
+        
+        obstacle = pygame.draw.rect(screen, (100, 100, 100), [obstacle_x + 185, obstacle_y - 48, obstacle_size - 8, obstacle_size - 8])
+        screen.blit(astroid, (obstacle_x + 170,obstacle_y - 60))
+        # spaceship 
+        player = pygame.draw.rect(screen, (0, 0, 0), [spaceship_x + 5, spaceship_y + 10, spaceship_size, spaceship_size])
+        screen.blit(space, (spaceship_x,spaceship_y))
+        obstacle1 = pygame.draw.rect(screen, (100, 100, 100), [obstacle1_x + 50, obstacle1_y - 50, obstacle1_size - 8, obstacle1_size - 8])
+        screen.blit(astroid, (obstacle1_x + 30,obstacle_y - 60))
+        player_rect = pygame.Rect(player_rect_x,player_rect_y,85,90)
+      # Border Code
+  
+        spaceship_movement_x += spaceship_x_change
+  
+        if spaceship_movement_x == 640 or spaceship_movement_x == 0:
+          spaceship_movement_x = 380
+        elif spaceship_y >= 480:
+          spaceship_y = 380
+
+    
+      
+        # enemy 
+        if enemy_visible == True:
+          enemy = pygame.draw.rect (screen, (57,255,20),(25,29,40,40))
+        if enemy_1_visible == True:
+          enemy_1 = pygame.draw.rect (screen, (57,255,20),(127,29,40,40))
+        if enemy_2_visible == True:
+          enemy_2 = pygame.draw.rect (screen, (57,255,40),(251,29,40,40))
+        if enemy_3_visible == True:
+          enemy_3 = pygame.draw.rect (screen, (57,255,40),(376,29,40,40))
+        if enemy_4_visible == True:
+          enemy_4 = pygame.draw.rect (screen, (57,255,40),(502,29,40,40))
+          screen.blit(alien, (-10, -10))
+          screen.blit(alien_2, (94, -10))
+          screen.blit(alien_3, (213, -10))
+          screen.blit(alien_4, (345, -10))
+          screen.blit(alien_5, (463, -10))
+        # enemy hitbox 
+        enemy_rect = pygame.Rect(25,29,40,40) 
+        enemy_1_rect = pygame.Rect(127,29,40,40)
+        enemy_2_rect = pygame.Rect(251,29,40,40)
+        enemy_3_rect = pygame.Rect(376,29,40,40)
+        enemy_4_rect = pygame.Rect(502,29,40,40)
+
+  
+        
+        # player laser
+        if player_laser == True: 
+            laser.x = spaceship_x + 35
+            laser.y = spaceship_y
+            pygame.draw.rect(screen, (0,255,0),laser)
+   
+              
+
+        
+          
+          
+        if laser.colliderect(enemy_rect):
+          alien = explode
+          #enemy_rect = False
+          #enemy_shoot_1 = pygame.Rect(0,0,0,0)
+          enemy_rect = pygame.Rect(0,0,0,0)
+          enemy_killed.append("enemy 1")
+          enemies_left.remove('Alien 1')
+          print(enemies_left)
+
+          
+          
+          
+          # _title = winning_font.render('YOU WIN !!!', True, (250, 255, 250))
+          
+          
+        
+        elif laser.colliderect(enemy_1_rect):    
+          alien_2 = explode 
+          enemy_shoot_2_visible = False
+          enemy_shoot_2 = pygame.Rect(0,0,0,0)
+          enemy_killed.append("enemy 2")
+        
+        elif laser.colliderect(enemy_2_rect):
+          alien_3 = explode
+          enemy_shoot_3_visible = False
+          enemy_shoot_3 = pygame.Rect (0,0,0,0)    
+          enemy_killed.append("enemy 3")
+    
+        elif laser.colliderect(enemy_3_rect):
+          alien_4 = explode 
+          enemy_shoot_4_visible = False
+          enemy_shoot_4 = pygame.Rect (0,0,0,0)      
+          enemy_killed.append("enemy 4")
+       
+        elif laser.colliderect(enemy_4_rect):
+          alien_5 = explode
+          enemy_shoot_5_visible = False
+          enemy_shoot_5 = pygame.Rect (0,0,0,0)
+          enemy_killed.append("enemy 5")
+        
+      
+
+        
+        
+       
+    
+       
+        
+     
+            
+        
+        
+        
+        # enemy laser
+        if enemy_shoot_1_visible == True:
+          enemy_laser = pygame.draw.rect (screen, (255,0,0), enemy_shoot_1)
+        if enemy_shoot_2_visible == True: 
+          enemy_laser_1 = pygame.draw.rect (screen, (255,0,0), enemy_shoot_2)
+        if enemy_shoot_3_visible == True:
+          enemy_laser_2 =pygame.draw.rect (screen, (255,0,0), enemy_shoot_3)
+        if enemy_shoot_4_visible == True: 
+          enemy_laser_3 = pygame.draw.rect (screen, (255,0,0),enemy_shoot_4)
+        if enemy_shoot_5_visible == True:
+          enemy_laser_4 = pygame.draw.rect (screen, (255,0,0),enemy_shoot_5)
+
+        if enemy_shoot_1.y >= 480:
+          enemy_shoot_1.y = 79 
+          enemy_shoot_2.y = 79
+          enemy_shoot_3.y= 79
+          enemy_shoot_4.y = 79
+          enemy_shoot_5.y = 79
+
+
+        # Power-ups 
+        if power_up_1_visible == True: 
+          pygame.draw.rect (screen, (255,10,10), power_up_1_rect)
+        if power_up_2_visible == True:
+          pygame.draw.rect (screen,(255,10,10), power_up_2_rect) 
+          
+
+  
+      elif current_screen == 3:
+        # Winning screen
+        screen.fill((100,150,100))
+        winning_title = winning_font.render('YOU WIN !!!', True, (250, 255, 250))
+        screen.blit(winning_title, (100, 200))
+      elif current_screen == 4:
+        # Losing Screen
+        screen.fill((200,150,150))
+        losing_title = losing_font.render('YOU LOSE !!! QUIT! NEVER PLAY AGAIN! GAME OVER', True, (250, 255, 250))
+        screen.blit(losing_title, (50, 200))
+        print(f'you killed {enemy_killed}')
+             
+      # Must be the last two lines
+    # of the game   loop
+      pygame.display.flip()   
+      clock.tick(30)
+      #---------------------------
+  
+  
+  pygame.quit()
+
+if __name__ == "__main__":
+  main ()
