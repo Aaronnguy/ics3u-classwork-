@@ -22,8 +22,8 @@ def main ():
   losing_font = pygame.font.SysFont('Comic Sans', 30)
   level_font = pygame.font.SysFont ('Comic Sans',35)
   enemy_killed = []
-  enemies_left = ['Alien 1', 'Alien 2', 'Alien 3', 'Alien 4']
-
+  you_killed = ['Alien 1', 'Alien 2', 'Alien 3', 'Alien 4','Alien 5']
+  kills_font = pygame.font.SysFont('Comic Sans', 30)
   # load images 
   spaceImg = pygame.image.load('space.png')
   space = pygame.transform.scale(spaceImg, (90, 100))
@@ -201,7 +201,6 @@ def main ():
           enemy_shoot_2_visible = False
           power_ups.append (power_up_1)
           current_screen = 3
-        
       elif spaceship_rect.colliderect(power_up_2_rect):
           power_up_2_visible = False
           enemy_visible = False
@@ -213,7 +212,6 @@ def main ():
           enemy_shoot_2_visible = False
           power_ups.append (power_up_2)
           current_screen = 3 
-          
           
           
 
@@ -324,15 +322,21 @@ def main ():
 
         
           
-          
+        
         if laser.colliderect(enemy_rect):
           alien = explode
           #enemy_rect = False
-          #enemy_shoot_1 = pygame.Rect(0,0,0,0)
+          enemy_shoot_1 = pygame.Rect(0,0,0,0)
           enemy_rect = pygame.Rect(0,0,0,0)
+          enemy_shoot_1_visible = False
           enemy_killed.append("enemy 1")
-          enemies_left.remove('Alien 1')
-          print(enemies_left)
+          print("you killed: ")
+          print(you_killed[0:1])
+          
+          
+          
+          
+          
 
           
           
@@ -346,26 +350,36 @@ def main ():
           enemy_shoot_2_visible = False
           enemy_shoot_2 = pygame.Rect(0,0,0,0)
           enemy_killed.append("enemy 2")
+          print("you killed:")
+          print(you_killed[1:2])
         
         elif laser.colliderect(enemy_2_rect):
           alien_3 = explode
           enemy_shoot_3_visible = False
           enemy_shoot_3 = pygame.Rect (0,0,0,0)    
           enemy_killed.append("enemy 3")
+          print("you killed:")
+          print(you_killed[2:3])
     
         elif laser.colliderect(enemy_3_rect):
           alien_4 = explode 
           enemy_shoot_4_visible = False
           enemy_shoot_4 = pygame.Rect (0,0,0,0)      
           enemy_killed.append("enemy 4")
+          print("you killed:")
+          print(you_killed[3:4])
        
         elif laser.colliderect(enemy_4_rect):
           alien_5 = explode
           enemy_shoot_5_visible = False
           enemy_shoot_5 = pygame.Rect (0,0,0,0)
           enemy_killed.append("enemy 5")
+          print("you killed:")
+          print(you_killed[4:])
+
+        if enemy_shoot_1_visible == False and enemy_shoot_2_visible == False and enemy_shoot_3_visible == False and enemy_shoot_4_visible == False and enemy_shoot_5_visible == False:
+          current_screen = 3 
         
-      
 
         
         
@@ -404,19 +418,20 @@ def main ():
         if power_up_2_visible == True:
           pygame.draw.rect (screen,(255,10,10), power_up_2_rect) 
           
-
+    
   
       elif current_screen == 3:
         # Winning screen
         screen.fill((100,150,100))
         winning_title = winning_font.render('YOU WIN !!!', True, (250, 255, 250))
-        screen.blit(winning_title, (100, 200))
+        screen.blit(winning_title, (300, 200))
       elif current_screen == 4:
         # Losing Screen
         screen.fill((200,150,150))
-        losing_title = losing_font.render('YOU LOSE !!! QUIT! NEVER PLAY AGAIN! GAME OVER', True, (250, 255, 250))
+        losing_title = losing_font.render('YOU LOSE! GAME OVER', True, (250, 255, 250))
         screen.blit(losing_title, (50, 200))
-        print(f'you killed {enemy_killed}')
+        kill_count = kills_font.render(f'You have killed{enemy_killed [1:6]}', True, (200,200,100))
+        screen.blit(kill_count, (42,422))  
              
       # Must be the last two lines
     # of the game   loop
